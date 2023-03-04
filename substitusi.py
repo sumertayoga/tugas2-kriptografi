@@ -1,4 +1,4 @@
-# example from eas 128 byte
+# rijndael
 Sbox_table = (
             [0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76],
             [0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0],
@@ -27,12 +27,12 @@ class SBox():
         col = input >>4
         return self.sbox_table[row][col]
     
-    def subBytes(self,bytess):  
+    def subBytes(self,bytess):
         ciphertext = b''
         for byte in bytess:
             ciphertext += self.substitute(byte).to_bytes(1, 'big')
         return ciphertext
-  
+
 
 
 if __name__ == "__main__" :
@@ -42,3 +42,5 @@ if __name__ == "__main__" :
     print("plaintext = ", plaintext)
     print("ciphertext = ", ciphertext)
     
+text -> bytearray
+byte array -> sbox= byte array -> pbox -> subtitusi-> bytearray -> iterasi
