@@ -1,5 +1,6 @@
 import hashlib
-from binascii import unhexlify
+import numpy as np
+
 
 def binToHexa(n):
     # convert binary to int
@@ -35,26 +36,67 @@ class SBox():
         key = hashlib.md5(key.encode('utf-8'))
         res = bin(int(key.hexdigest(), 16)).zfill(8)[2:]
 
-        tempArr = [res]
+        chunkArr = [res]
         for i in range(15):
-            tempArr.append(xorBinary(tempArr[i], cyclicShift(tempArr[i])))
-        for i in range(16):
-            tempArr[i] = binToHexa(tempArr[i])
+            chunkArr.append(xorBinary(chunkArr[i], cyclicShift(chunkArr[i])))
 
-        tempMat = [[0 for _ in range(16)] for _ in range(16)]
+        for i in range(16):
+            chunkArr[i] = binToHexa(chunkArr[i])
+
+        tempArr = []
         for i in range(16):
             for j in range(16):
-                tempMat[i][j] = int(tempArr[i][j*2:j*2+2], 16)
-        self.sbox_table = tempMat
+                tempArr.append(int(chunkArr[i][j*2:j*2+2], 16))
 
-    def substitute(self, input):
+        index = np.unique(tempArr, return_index=True)[1]
+        unique = []
+        for i in np.sort(index):
+            unique.append(tempArr[i])
+
+        for i in range(256):
+            if i not in unique:
+                unique.append(i)
+
+        mat = []
+        for i in range(16):
+            mat.append(unique[i*16:i*16+16])
+
+        self.sbox_table = mat
+
+        invMat = [[0 for _ in range(16)] for _ in range(16)]
+        hex = ["0", "1", "2", "3", "4",
+               "5", "6", "7", "8", "9",
+               "a", "b", "c", "d", "e",
+               "f"]
+        temp = np.array(mat)
+
+        for i in range(16):
+            for j in range(16):
+                val = int(hex[i] + hex[j], 16)
+                index = np.where(temp == val)
+                invMat[i][j] = int(hex[index[0][0]] + hex[index[1][0]], 16)
+
+        self.inv_table = invMat
+
+    def substitute(self, input, isInverse):
         row = (input & 0x0f)
         col = input >> 4
-        return self.sbox_table[row][col]
+        if(isInverse):
+            return self.inv_table[row][col]
+        else:
+            return self.sbox_table[row][col]
 
-    def subBytes(self, bytess):
+    def subBytes(self, bytess, isInverse):
         ciphertext = b''
         for byte in bytess:
-            ciphertext += self.substitute(byte).to_bytes(1, 'big')
+            ciphertext += self.substitute(byte, isInverse).to_bytes(1, 'big')
         return ciphertext
 
+
+if __name__ == "__main__":
+    sbox = SBox("sabtu")
+    plaintext = b'\x0F\x0b\xa2\x13'
+    # substitusi dengan sbox biasa
+    ciphertext = sbox.subBytes(plaintext, isInverse=False)
+    print("plaintext = ", plaintext)
+    print("ciphertext = ", ciphertext)
