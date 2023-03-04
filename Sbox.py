@@ -87,16 +87,18 @@ class SBox():
             return self.sbox_table[row][col]
 
     def subBytes(self, bytess, isInverse):
-        ciphertext = b''
+        ciphertext = []
         for byte in bytess:
-            ciphertext += self.substitute(byte, isInverse).to_bytes(1, 'big')
+            ciphertext.append(self.substitute(byte, isInverse))
         return ciphertext
 
 
 if __name__ == "__main__":
     sbox = SBox("sabtu")
-    plaintext = b'\x0F\x0b\xa2\x13'
-    # substitusi dengan sbox biasa
-    ciphertext = sbox.subBytes(plaintext, isInverse=False)
-    print("plaintext = ", plaintext)
+    # plaintext = b'\x0F\x0b\xa2\x13'
+    my_string = "hello world!"
+    my_bytearray = [ord(c) for c in my_string]
+    ciphertext = sbox.subBytes(my_bytearray, isInverse=False)
+    print("plaintext = ", my_bytearray)
     print("ciphertext = ", ciphertext)
+    decrypt =sbox.subBytes(ciphertext, isInverse=True)
