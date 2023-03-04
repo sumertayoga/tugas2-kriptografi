@@ -27,12 +27,12 @@ class SBox():
         col = input >>4
         return self.sbox_table[row][col]
     
-    def subBytes(self,bytess):
+    def subBytes(self,bytess):  
         ciphertext = b''
         for byte in bytess:
             ciphertext += self.substitute(byte).to_bytes(1, 'big')
         return ciphertext
-
+  
 
 
 if __name__ == "__main__" :
