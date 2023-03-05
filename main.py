@@ -54,7 +54,7 @@ def encrypt_block(block: bytes, keys: list, sbox: SBox, pbox: PBox):
 
 def encrypt(plaintext: bytes, key: bytes):
     sbox = SBox(key)
-    pbox = PBox([2, 5, 1, 0, 7, 3, 6, 4])
+    pbox = PBox([6, 3, 0, 4, 2, 7, 5, 1])
     keys = key_expansion(key)
     plaintext = pad(plaintext)
     ciphertext = b""
@@ -88,7 +88,7 @@ def decrypt_block(block: bytes, keys: list, sbox: SBox, pbox: PBox):
 
 def decrypt(ciphertext: bytes, key: bytes):
     sbox = SBox(key)
-    pbox = PBox([2, 5, 1, 0, 7, 3, 6, 4])
+    pbox = PBox([6, 3, 0, 4, 2, 7, 5, 1])
     keys = key_expansion(key)
     plaintext = b""
 
@@ -108,3 +108,10 @@ if __name__ == "__main__":
     decryptRes = decrypt(ciphertext, key)
     # decryptRes = unpad(decryptRes)
     print("plaintext:", list(decryptRes))
+    plaintext2 = b"halo-halobandung"
+    print("plaintext2:", list(plaintext2))
+    ciphertext2 = encrypt(plaintext2, key)
+    print("ciphertext2:", list(ciphertext2))
+    decryptRes2 = decrypt(ciphertext2, key)
+    # decryptRes = unpad(decryptRes)
+    print("plaintext2:", list(decryptRes2))
