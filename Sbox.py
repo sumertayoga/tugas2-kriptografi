@@ -33,7 +33,7 @@ def xorBinary(binary1, binary2):
 
 class SBox():
     def __init__(self, key):
-        key = hashlib.md5(key.encode('utf-8'))
+        key = hashlib.md5(key)
         res = bin(int(key.hexdigest(), 16)).zfill(8)[2:]
 
         chunkArr = [res]
@@ -94,12 +94,12 @@ class SBox():
 
 
 if __name__ == "__main__":
-    sbox = SBox("sabtu")
+    sbox = SBox(b"sabtu")
     # plaintext = b'\x0F\x0b\xa2\x13'
     my_string = "hello world!"
     my_bytearray = [ord(c) for c in my_string]
     ciphertext = sbox.subBytes(my_bytearray, isInverse=False)
-    print("plaintext = ", my_bytearray)
+    print("plaintext asli = ", my_bytearray)
     print("ciphertext = ", ciphertext)
     decrypt = sbox.subBytes(ciphertext, isInverse=True)
-    print(decrypt)
+    print("plaintext dekripsi = ", decrypt)
