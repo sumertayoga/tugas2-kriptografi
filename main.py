@@ -2,13 +2,13 @@ from keygen import key_expansion
 from constants import *
 from Sbox import SBox
 from PBox import PBox
+import time
 
 
 def pad(input: bytes) -> bytes:
-    if(len(input) % BLOCK_SIZE != 0):
-        pad_len = BLOCK_SIZE - (len(input) % BLOCK_SIZE)
-        pad = chr(pad_len).encode('latin-1') * pad_len
-        input += pad
+    pad_len = BLOCK_SIZE - (len(input) % BLOCK_SIZE)
+    pad = chr(pad_len).encode('latin-1') * pad_len
+    input += pad
     return input
 
 
@@ -29,6 +29,13 @@ def inv_subs(bytess):
     for byte in bytess:
         substituted.append(INV_SBOX[byte >> 4][byte & 0xf])
     return substituted
+
+
+def convertToString(bytess):
+    text = ""
+    for byte in bytess:
+        text += chr(byte)
+    return text
 
 
 def encrypt_block(block: bytes, keys: list, sbox: SBox, pbox: PBox):
@@ -105,18 +112,20 @@ def decrypt(ciphertext: bytes, key: bytes):
 
 
 if __name__ == "__main__":
-    key = b"test"
-    plaintext = b"kamiadatigaorang"
-    print("plaintext:", list(plaintext))
-    ciphertext = encrypt(plaintext, key)
-    print("ciphertext:", list(ciphertext))
-    decryptRes = decrypt(ciphertext, key)
-    # decryptRes = unpad(decryptRes)
-    print("plaintext:", list(decryptRes))
-    plaintext2 = b"kamuadatigaorang"
-    print("plaintext2:", list(plaintext2))
-    ciphertext2 = encrypt(plaintext2, key)
-    print("ciphertext2:", list(ciphertext2))
-    decryptRes2 = decrypt(ciphertext2, key)
-    # decryptRes = unpad(decryptRes)
-    print("plaintext2:", list(decryptRes2))
+    key = b"kriptografi"
+    plaintext = input("Masukkan plainteks: ")
+    plaintext = bytes(plaintext, 'utf-8')
+    startEnc = time.time()
+    cipherRes = encrypt(plaintext, key)
+    endEnc = time.time()
+    ciphertext = convertToString(cipherRes)
+    print("ciphertext:", (ciphertext))
+    startDec = time.time()
+    decryptRes = decrypt(cipherRes, key)
+    endDec = time.time()
+    decryptRes = unpad(decryptRes)
+    decryptRes = convertToString(decryptRes)
+    print("decrypt result:", decryptRes)
+
+    print("Waktu Enkripsi: ", endEnc - startEnc)
+    print("Waktu Dekripsi: ", endDec - startDec)
