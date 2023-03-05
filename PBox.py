@@ -6,10 +6,10 @@ class PBox():
         array =[]
         for i in range(len(input)):
             if (isInverse):
-                idx =self.pbox_table[i]
+                idx = self.pbox_table.index(i)
                 array.append(input[idx])
             else:
-                idx = self.pbox_table.index(i)
+                idx =self.pbox_table[i]
                 array.append(input[idx])
         return array
 
