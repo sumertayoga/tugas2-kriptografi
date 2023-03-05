@@ -44,11 +44,13 @@ def encrypt_block(block: bytes, keys: list, sbox: SBox, pbox: PBox):
         substituted_2 = subs(permutted)
         # xor dengan key
         cipherblock = int.from_bytes(
-            substituted_2, 'big') ^ int.from_bytes(keys[i][0:8], 'big')
-        
+            substituted_2, 'big')
         cipherblock = cipherblock ^ int.from_bytes(left, 'big')
         cipherblock = cipherblock.to_bytes(8, 'big')
         cipherblock = right + cipherblock
+        cipherblock = int.from_bytes(
+            cipherblock, 'big') ^ int.from_bytes(keys[i], 'big')
+        cipherblock = cipherblock.to_bytes(16, 'big')
     return cipherblock
 
 
@@ -69,6 +71,9 @@ def encrypt(plaintext: bytes, key: bytes):
 def decrypt_block(block: bytes, keys: list, sbox: SBox, pbox: PBox):
     plainblock = block
     for i in range(ROUND-1, -1, -1):
+        plainblock = int.from_bytes(
+            plainblock, 'big') ^ int.from_bytes(keys[i], 'big')
+        plainblock = plainblock.to_bytes(16, 'big')
         left = plainblock[0:8]
         right = plainblock[8:]
         # subtitusi dengan sbox
@@ -79,7 +84,7 @@ def decrypt_block(block: bytes, keys: list, sbox: SBox, pbox: PBox):
         substituted_2 = subs(permutted)
         # xor dengan key
         plainblock = int.from_bytes(
-            substituted_2, 'big') ^ int.from_bytes(keys[i][0:8], 'big')
+            substituted_2, 'big')
         plainblock = plainblock ^ int.from_bytes(right, 'big')
         plainblock = plainblock.to_bytes(8, 'big')
         plainblock = plainblock + left
@@ -101,14 +106,14 @@ def decrypt(ciphertext: bytes, key: bytes):
 
 if __name__ == "__main__":
     key = b"test"
-    plaintext = b"halo-halobandunt"
+    plaintext = b"kamiadatigaorang"
     print("plaintext:", list(plaintext))
     ciphertext = encrypt(plaintext, key)
     print("ciphertext:", list(ciphertext))
     decryptRes = decrypt(ciphertext, key)
     # decryptRes = unpad(decryptRes)
     print("plaintext:", list(decryptRes))
-    plaintext2 = b"halo-halobandung"
+    plaintext2 = b"kamuadatigaorang"
     print("plaintext2:", list(plaintext2))
     ciphertext2 = encrypt(plaintext2, key)
     print("ciphertext2:", list(ciphertext2))
