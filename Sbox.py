@@ -99,8 +99,7 @@ if __name__ == "__main__":
     my_string = "hello world!"
     my_bytearray = [ord(c) for c in my_string]
     ciphertext = sbox.subBytes(my_bytearray, isInverse=False)
-    print("plaintext = ", my_bytearray)
+    print("plaintext asli = ", my_bytearray)
     print("ciphertext = ", ciphertext)
-    decrypt =sbox.subBytes(ciphertext, isInverse=True)
-    print("decrypt = ", decrypt)
-    
+    decrypt = sbox.subBytes(ciphertext, isInverse=True)
+    print("plaintext dekripsi = ", decrypt)
