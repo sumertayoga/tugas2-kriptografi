@@ -72,9 +72,9 @@ class SBox():
 
         for i in range(16):
             for j in range(16):
-                val = int(hex[i] + hex[j], 16)
+                val = int(hex[j] + hex[i], 16)
                 index = np.where(temp == val)
-                invMat[i][j] = int(hex[index[0][0]] + hex[index[1][0]], 16)
+                invMat[i][j] = int(hex[index[1][0]] + hex[index[0][0]], 16)
 
         self.inv_table = invMat
 
@@ -101,4 +101,5 @@ if __name__ == "__main__":
     ciphertext = sbox.subBytes(my_bytearray, isInverse=False)
     print("plaintext = ", my_bytearray)
     print("ciphertext = ", ciphertext)
-    decrypt =sbox.subBytes(ciphertext, isInverse=True)
+    decrypt = sbox.subBytes(ciphertext, isInverse=True)
+    print(decrypt)
