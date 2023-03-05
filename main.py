@@ -2,7 +2,6 @@ from keygen import key_expansion
 from constants import *
 from Sbox import SBox
 from PBox import PBox
-from binascii import hexlify, unhexlify
 
 def pad(input: bytes) -> bytes:
     pad_len = BLOCK_SIZE - (len(input) % BLOCK_SIZE)
@@ -80,11 +79,9 @@ def decrypt(ciphertext: bytes, key: bytes):
 if __name__ == "__main__":
     key = b"test"
     plaintext = b"halo-halo bandung"
-    arrPlainText = [byte for byte in plaintext]
-    print("plaintext:", arrPlainText)
+    print("plaintext:", list(plaintext))
     ciphertext = encrypt(plaintext, key)
-    arrCipherText = [byte for byte in ciphertext]
-    print("ciphertext:", arrCipherText)
+    print("ciphertext:", list(ciphertext))
     decryptRes = decrypt(ciphertext, key)
-    arrDecryptRes = [byte for byte in decryptRes]
-    print("plaintext:", arrDecryptRes)
+    decryptRes = unpad(decryptRes)
+    print("plaintext:", list(decryptRes))
